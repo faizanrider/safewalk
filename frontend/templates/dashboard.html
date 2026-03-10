@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard – SafeWalk</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="icon"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><text y='28' font-size='28'>🛡️</text></svg>">
+</head>
+
+<body>
+    <div class="bg-mesh"></div>
+
+    <!-- ── Navigation ────────────────────────────────── -->
+    <nav class="navbar scrolled" id="navbar">
+        <div class="nav-container">
+            <a href="/" class="nav-logo">
+                <span class="logo-icon">🛡️</span>
+                SafeWalk
+            </a>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="/dashboard" class="active">Dashboard</a></li>
+                <li><a href="/map">Map</a></li>
+                <li><a href="#" onclick="handleLogout()" class="btn btn-secondary btn-sm">Log Out</a></li>
+            </ul>
+            <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">☰</button>
+        </div>
+    </nav>
+
+    <!-- ── Dashboard Content ─────────────────────────── -->
+    <main class="dashboard">
+        <div class="dashboard-header">
+            <h1>Good <span id="greeting">evening</span>, <span id="userName">User</span> 👋</h1>
+            <p>Here's your safety overview</p>
+        </div>
+
+        <!-- Stats -->
+        <div class="stats-grid">
+            <div class="stat-card glass-card">
+                <div class="stat-icon stat-green">📍</div>
+                <div>
+                    <div class="stat-value" id="statTracking">Active</div>
+                    <div class="stat-label">Location Tracking</div>
+                </div>
+            </div>
+            <div class="stat-card glass-card">
+                <div class="stat-icon stat-blue">👥</div>
+                <div>
+                    <div class="stat-value" id="statContacts">0</div>
+                    <div class="stat-label">Emergency Contacts</div>
+                </div>
+            </div>
+            <div class="stat-card glass-card">
+                <div class="stat-icon stat-rose">🚨</div>
+                <div>
+                    <div class="stat-value" id="statSOS">0</div>
+                    <div class="stat-label">SOS Events</div>
+                </div>
+            </div>
+            <div class="stat-card glass-card">
+                <div class="stat-icon stat-amber">⚠️</div>
+                <div>
+                    <div class="stat-value" id="statReports">0</div>
+                    <div class="stat-label">Reports Filed</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Grid -->
+        <div class="dashboard-grid">
+            <!-- Emergency Contacts Panel -->
+            <div class="panel glass-card">
+                <div class="panel-header">
+                    <h2>Emergency Contacts</h2>
+                    <button class="btn btn-primary btn-sm" onclick="openAddContactModal()">+ Add</button>
+                </div>
+                <ul class="contact-list" id="contactList">
+                    <div class="empty-state" id="emptyContacts">
+                        <div class="empty-icon">👥</div>
+                        <p>No contacts yet. Add your first emergency contact.</p>
+                    </div>
+                </ul>
+            </div>
+
+            <!-- SOS History Panel -->
+            <div class="panel glass-card">
+                <div class="panel-header">
+                    <h2>Recent SOS</h2>
+                </div>
+                <div id="sosHistory">
+                    <div class="empty-state" id="emptySOS">
+                        <div class="empty-icon">🛡️</div>
+                        <p>No SOS events. You're safe!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- ── SOS Floating Button ───────────────────────── -->
+    <button class="sos-fab" id="sosBtn" onclick="openSOSModal()">SOS</button>
+
+    <!-- ── SOS Modal ─────────────────────────────────── -->
+    <div class="sos-modal-overlay" id="sosModalOverlay">
+        <div class="sos-modal">
+            <h2>🚨 Emergency SOS</h2>
+            <p>Your location will be sent to all emergency contacts via SMS and email.</p>
+            <div class="sos-countdown" id="sosCountdown">5</div>
+            <div class="sos-modal-actions">
+                <button class="btn btn-secondary" onclick="cancelSOS()">Cancel</button>
+                <button class="btn btn-danger btn-lg" onclick="sendSOSNow()">Send SOS Now</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── Add Contact Modal ─────────────────────────── -->
+    <div class="modal-overlay" id="contactModalOverlay">
+        <div class="modal">
+            <h2>Add Emergency Contact</h2>
+            <p class="modal-subtitle">This person will be notified during SOS alerts</p>
+
+            <form id="contactForm" onsubmit="return handleAddContact(event)">
+                <div class="form-group">
+                    <label class="form-label" for="contactName">Contact Name</label>
+                    <input type="text" id="contactName" class="form-input" placeholder="e.g. Mom" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="contactPhone">Phone Number</label>
+                    <input type="tel" id="contactPhone" class="form-input" placeholder="+1234567890" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="contactEmail">Email (optional)</label>
+                    <input type="email" id="contactEmail" class="form-input" placeholder="contact@example.com">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="contactRelation">Relationship</label>
+                    <input type="text" id="contactRelation" class="form-input"
+                        placeholder="e.g. Parent, Friend, Partner">
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeContactModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Contact</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script src="/static/js/app.js"></script>
+    <script src="/static/js/sos.js"></script>
+    <script src="/static/js/contacts.js"></script>
+    <script>
+        // Check auth
+        if (!localStorage.getItem('access_token')) {
+            window.location.href = '/login';
+        }
+
+        // Set greeting based on time
+        const hour = new Date().getHours();
+        const greetEl = document.getElementById('greeting');
+        if (hour < 12) greetEl.textContent = 'morning';
+        else if (hour < 18) greetEl.textContent = 'afternoon';
+        else greetEl.textContent = 'evening';
+
+        // Set user name
+        const user = JSON.parse(localStorage.getItem('user') || '{}');
+        document.getElementById('userName').textContent = user.full_name || user.email || 'User';
+
+        // Mobile nav
+        document.getElementById('navToggle').addEventListener('click', () => {
+            document.getElementById('navLinks').classList.toggle('open');
+        });
+
+        // Load dashboard data
+        loadContacts();
+        loadSOSHistory();
+
+        function handleLogout() {
+            fetch('/api/auth/logout', {
+                method: 'POST',
+                headers: { 'Authorization': 'Bearer ' + localStorage.getItem('access_token') }
+            }).finally(() => {
+                localStorage.removeItem('access_token');
+                localStorage.removeItem('refresh_token');
+                localStorage.removeItem('user');
+                window.location.href = '/login';
+            });
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Safety Map – SafeWalk</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="icon"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><text y='28' font-size='28'>🛡️</text></svg>">
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+</head>
+
+<body>
+    <div class="bg-mesh"></div>
+
+    <!-- ── Navigation ────────────────────────────────── -->
+    <nav class="navbar scrolled" id="navbar">
+        <div class="nav-container">
+            <a href="/" class="nav-logo">
+                <span class="logo-icon">🛡️</span>
+                SafeWalk
+            </a>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="/dashboard">Dashboard</a></li>
+                <li><a href="/map" class="active">Map</a></li>
+                <li><a href="#" id="authLink" class="btn btn-secondary btn-sm">Log In</a></li>
+            </ul>
+            <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">☰</button>
+        </div>
+    </nav>
+
+    <!-- ── Map Page ──────────────────────────────────── -->
+    <div class="map-page">
+        <!-- Google Maps Clone Routing Panel -->
+        <div class="routing-panel shadow-lg">
+            <div class="routing-header">
+                <div class="route-icons">
+                    <div class="icon-dot-start"></div>
+                    <div class="icon-line"></div>
+                    <div class="icon-pin-end">📍</div>
+                </div>
+                <div class="route-inputs">
+                    <div class="input-wrapper">
+                        <input type="text" id="startLocation"
+                            placeholder="Choose starting point, or click on the map..." value="Your Location">
+                        <button class="clear-btn" onclick="document.getElementById('startLocation').value='';"
+                            aria-label="Clear start">×</button>
+                    </div>
+                    <div class="input-divider"></div>
+                    <div class="input-wrapper">
+                        <input type="text" id="endLocation" placeholder="Choose destination...">
+                        <button class="clear-btn" onclick="document.getElementById('endLocation').value='';"
+                            aria-label="Clear end">×</button>
+                    </div>
+                </div>
+                <button class="swap-btn" onclick="swapLocations()" aria-label="Swap locations">⇅</button>
+            </div>
+
+            <div class="routing-actions">
+                <button id="directionsBtn" class="btn btn-primary w-100" onclick="calculateGoogleRoute()">
+                    <span>Directions</span>
+                    <span class="btn-icon-right">→</span>
+                </button>
+            </div>
+
+            <div id="routeResultPanel" class="route-results hidden">
+                <div class="route-summary">
+                    <h3 id="routeDistance">-- km</h3>
+                    <p id="routeDuration" class="text-muted">-- min</p>
+                </div>
+                <div id="routeSafetyWarning" class="route-safety-badge hidden">
+                    <span class="safety-icon">⚠️</span>
+                    <span id="routeSafetyText">Checking safety...</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Map Toolbar -->
+        <div class="map-toolbar">
+            <button class="btn btn-sm btn-secondary" onclick="setBaseMap('satellite')" title="Satellite View">🛰️
+                Satellite</button>
+            <button class="btn btn-sm btn-secondary" onclick="setBaseMap('digital')" title="Digital View">🗺️
+                Digital</button>
+            <div style="width: 1px; height: 24px; background: rgba(255,255,255,0.2); margin: 0 8px;"></div>
+            <button class="btn btn-sm btn-secondary" onclick="centerOnUser()" title="My Location">📍 Me</button>
+            <button id="toggleZonesBtn" class="btn btn-sm btn-secondary active" onclick="toggleSafetyZones()"
+                title="Toggle Zones">🛡️ Zones</button>
+            <button class="btn btn-sm btn-secondary" onclick="openReportModal()" title="Report Area">⚠️ Report</button>
+        </div>
+
+        <!-- Map Container -->
+        <div class="map-container">
+            <div id="map"></div>
+        </div>
+
+        <!-- Map Legend -->
+        <div class="map-legend glass-card">
+            <h4>Legend</h4>
+            <div class="legend-item">
+                <div class="legend-dot safe"></div> Safe (Residential)
+            </div>
+            <div class="legend-item">
+                <div class="legend-dot normal"></div> Moderate (Schools)
+            </div>
+            <div class="legend-item">
+                <div class="legend-dot unsafe"></div> Risky (Pubs/Bars)
+            </div>
+        </div>
+    </div>
+
+    <!-- ── SOS Floating Button ───────────────────────── -->
+    <button class="sos-fab" id="sosBtn" onclick="openSOSModal()">SOS</button>
+
+    <!-- ── SOS Modal ─────────────────────────────────── -->
+    <div class="sos-modal-overlay" id="sosModalOverlay">
+        <div class="sos-modal">
+            <h2>🚨 Emergency SOS</h2>
+            <p>Your location will be sent to all emergency contacts via SMS and email.</p>
+            <div class="sos-countdown" id="sosCountdown">5</div>
+            <div class="sos-modal-actions">
+                <button class="btn btn-secondary" onclick="cancelSOS()">Cancel</button>
+                <button class="btn btn-danger btn-lg" onclick="sendSOSNow()">Send SOS Now</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── Report Unsafe Area Modal ──────────────────── -->
+    <div class="modal-overlay" id="reportModalOverlay">
+        <div class="modal">
+            <h2>⚠️ Report Unsafe Area</h2>
+            <p class="modal-subtitle">Help keep the community safe by reporting dangerous areas</p>
+
+            <form id="reportForm" onsubmit="return handleReport(event)">
+                <div class="form-group">
+                    <label class="form-label">Your Current Location</label>
+                    <input type="text" id="reportLocation" class="form-input" readonly
+                        placeholder="Detecting location..." style="background: var(--surface-active);">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="reportDesc">Description</label>
+                    <textarea id="reportDesc" class="form-input" placeholder="Describe why this area feels unsafe..."
+                        required></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Severity</label>
+                    <div class="severity-select" id="severitySelect">
+                        <div class="severity-option" data-value="low" onclick="selectSeverity(this)">Low</div>
+                        <div class="severity-option active" data-value="medium" onclick="selectSeverity(this)">Medium
+                        </div>
+                        <div class="severity-option" data-value="high" onclick="selectSeverity(this)">High</div>
+                    </div>
+                </div>
+                <input type="hidden" id="reportLat" value="">
+                <input type="hidden" id="reportLng" value="">
+                <input type="hidden" id="reportSeverity" value="medium">
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeReportModal()">Cancel</button>
+                    <button type="submit" class="btn btn-danger">Submit Report</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script src="/static/js/app.js"></script>
+    <script src="/static/js/sos.js"></script>
+    <script src="/static/js/location.js"></script>
+    <script>
+        // Auth link
+        const authLink = document.getElementById('authLink');
+        if (localStorage.getItem('access_token')) {
+            authLink.textContent = 'Log Out';
+            authLink.onclick = (e) => {
+                e.preventDefault();
+                localStorage.clear();
+                window.location.href = '/login';
+            };
+        } else {
+            authLink.href = '/login';
+        }
+
+        // Mobile nav
+        document.getElementById('navToggle').addEventListener('click', () => {
+            document.getElementById('navLinks').classList.toggle('open');
+        });
+    </script>
+    <!-- Google Maps API for Directions ONLY -->
+    <script src="https://maps.googleapis.com/maps/api/js?key={{ maps_key }}&libraries=places"></script>
+
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+
+    <script src="/static/js/map.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', initMap);
+    </script>
+</body>
+
+</html>

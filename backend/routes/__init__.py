@@ -1,0 +1,3 @@
+"""
+SafeWalk – Routes Package Init
+"""

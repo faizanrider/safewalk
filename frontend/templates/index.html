@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="SafeWalk – Smart Personal Safety Navigation System. Track your location, send SOS alerts, and navigate safely.">
+    <title>SafeWalk – Smart Personal Safety Navigation</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><text y='28' font-size='28'>🛡️</text></svg>">
+</head>
+<body>
+    <div class="bg-mesh"></div>
+
+    <!-- ── Navigation ────────────────────────────────── -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <a href="/" class="nav-logo">
+                <span class="logo-icon">🛡️</span>
+                SafeWalk
+            </a>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="/" class="active">Home</a></li>
+                <li><a href="/map">Map</a></li>
+                <li><a href="/login" class="btn btn-secondary btn-sm">Log In</a></li>
+                <li><a href="/signup" class="btn btn-primary btn-sm">Sign Up</a></li>
+            </ul>
+            <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">☰</button>
+        </div>
+    </nav>
+
+    <!-- ── Hero Section ──────────────────────────────── -->
+    <section class="hero">
+        <div class="hero-content">
+            <div class="hero-badge">
+                <span class="pulse-dot"></span>
+                Personal Safety Platform
+            </div>
+            <h1>Walk Safe, Anywhere, Anytime</h1>
+            <p>
+                Real-time location tracking, instant SOS alerts, and smart safety navigation — 
+                all in one platform designed to keep you and your loved ones safe.
+            </p>
+            <div class="hero-actions">
+                <a href="/signup" class="btn btn-primary btn-lg">Get Started Free →</a>
+                <a href="/map" class="btn btn-secondary btn-lg">View Safety Map</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ── Features Section ──────────────────────────── -->
+    <section class="features-section">
+        <div class="section-header">
+            <h2>Everything You Need to Stay Safe</h2>
+            <p>Powerful safety features designed for real-world protection</p>
+        </div>
+        <div class="feature-grid">
+            <div class="feature-card glass-card">
+                <div class="feature-icon icon-rose">🚨</div>
+                <h3>Instant SOS Alerts</h3>
+                <p>One-tap emergency button sends your live GPS location to all trusted contacts via SMS and email instantly.</p>
+            </div>
+            <div class="feature-card glass-card">
+                <div class="feature-icon icon-green">📍</div>
+                <h3>Live Location Tracking</h3>
+                <p>Continuous GPS tracking keeps your loved ones informed of your whereabouts in real time on an interactive map.</p>
+            </div>
+            <div class="feature-card glass-card">
+                <div class="feature-icon icon-purple">🗺️</div>
+                <h3>Safety Map Visualization</h3>
+                <p>Color-coded safety zones show safe, normal, and high-risk areas so you can make informed decisions.</p>
+            </div>
+            <div class="feature-card glass-card">
+                <div class="feature-icon icon-cyan">🧭</div>
+                <h3>Safe Route Navigation</h3>
+                <p>Get route recommendations with safety scores. Green routes are safest, red routes are higher risk.</p>
+            </div>
+            <div class="feature-card glass-card">
+                <div class="feature-icon icon-amber">👥</div>
+                <h3>Emergency Contacts</h3>
+                <p>Manage trusted contacts who receive instant notifications when you trigger an SOS alert.</p>
+            </div>
+            <div class="feature-card glass-card">
+                <div class="feature-icon icon-blue">📱</div>
+                <h3>Works Everywhere</h3>
+                <p>Fully responsive design works seamlessly on smartphones, tablets, laptops, and desktop computers.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ── CTA Section ───────────────────────────────── -->
+    <section class="features-section">
+        <div class="section-header">
+            <h2>Ready to Walk Safely?</h2>
+            <p>Join SafeWalk today and take control of your personal safety</p>
+            <div style="margin-top: 32px;">
+                <a href="/signup" class="btn btn-primary btn-lg">Create Free Account →</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ── Footer ────────────────────────────────────── -->
+    <footer class="footer">
+        <p>© 2026 SafeWalk – Smart Personal Safety Navigation System. All rights reserved.</p>
+    </footer>
+
+    <script src="/static/js/app.js"></script>
+    <script>
+        // Navbar scroll effect
+        window.addEventListener('scroll', () => {
+            const navbar = document.getElementById('navbar');
+            navbar.classList.toggle('scrolled', window.scrollY > 50);
+        });
+
+        // Mobile nav toggle
+        document.getElementById('navToggle').addEventListener('click', () => {
+            document.getElementById('navLinks').classList.toggle('open');
+        });
+    </script>
+</body>
+</html>

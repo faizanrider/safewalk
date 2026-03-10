@@ -1,0 +1,3 @@
+"""
+SafeWalk – Backend Package Init
+"""
