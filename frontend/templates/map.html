@@ -35,8 +35,11 @@
     <!-- ── Map Page ──────────────────────────────────── -->
     <div class="map-page">
         <!-- Google Maps Clone Routing Panel -->
-        <div class="routing-panel shadow-lg">
+        <div class="routing-panel shadow-lg" id="routingPanel">
             <div class="routing-header">
+                <div class="panel-controls">
+                    <button class="minimize-btn" onclick="toggleRoutingPanel()" title="Minimize">−</button>
+                </div>
                 <div class="route-icons">
                     <div class="icon-dot-start"></div>
                     <div class="icon-line"></div>
@@ -97,8 +100,11 @@
         </div>
 
         <!-- Map Legend -->
-        <div class="map-legend glass-card">
-            <h4>Legend</h4>
+        <div class="map-legend glass-card" id="mapLegend">
+            <div class="panel-header-sm">
+                <h4>Legend</h4>
+                <button class="minimize-btn-sm" onclick="toggleLegend()" title="Minimize">−</button>
+            </div>
             <div class="legend-item">
                 <div class="legend-dot safe"></div> Safe (Residential)
             </div>
@@ -108,6 +114,14 @@
             <div class="legend-item">
                 <div class="legend-dot unsafe"></div> Risky (Pubs/Bars)
             </div>
+        </div>
+
+        <!-- Floating Toggle Buttons (Visible when collapsed) -->
+        <div class="floating-controls">
+            <button id="showRoutingBtn" class="btn-floating hidden" onclick="toggleRoutingPanel()"
+                title="Show Directions">🧭</button>
+            <button id="showLegendBtn" class="btn-floating hidden" onclick="toggleLegend()"
+                title="Show Legend">ℹ️</button>
         </div>
     </div>
 
