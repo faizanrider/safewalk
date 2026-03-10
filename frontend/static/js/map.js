@@ -418,3 +418,30 @@ async function handleReport(e) {
         showToast('Network error', 'error');
     }
 }
+
+// ── Mobile UI Toggles ───────────────────────────────────
+function toggleLegend() {
+    const legend = document.getElementById('mapLegend');
+    const showBtn = document.getElementById('showLegendBtn');
+
+    if (legend.classList.contains('collapsed')) {
+        legend.classList.remove('collapsed');
+        showBtn.classList.add('hidden');
+    } else {
+        legend.classList.add('collapsed');
+        showBtn.classList.remove('hidden');
+    }
+}
+
+function toggleRoutingPanel() {
+    const panel = document.getElementById('routingPanel');
+    const showBtn = document.getElementById('showRoutingBtn');
+
+    if (panel.classList.contains('collapsed')) {
+        panel.classList.remove('collapsed');
+        showBtn.classList.add('hidden');
+    } else {
+        panel.classList.add('collapsed');
+        showBtn.classList.remove('hidden');
+    }
+}
