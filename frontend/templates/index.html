@@ -1,13 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="SafeWalk – Smart Personal Safety Navigation System. Track your location, send SOS alerts, and navigate safely.">
+    <meta name="description"
+        content="SafeWalk – Smart Personal Safety Navigation System. Track your location, send SOS alerts, and navigate safely.">
     <title>SafeWalk – Smart Personal Safety Navigation</title>
     <link rel="stylesheet" href="/static/css/style.css">
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><text y='28' font-size='28'>🛡️</text></svg>">
+    <link rel="icon"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><text y='28' font-size='28'>🛡️</text></svg>">
 </head>
+
 <body>
     <div class="bg-mesh"></div>
 
@@ -37,7 +41,7 @@
             </div>
             <h1>Walk Safe, Anywhere, Anytime</h1>
             <p>
-                Real-time location tracking, instant SOS alerts, and smart safety navigation — 
+                Real-time location tracking, instant SOS alerts, and smart safety navigation —
                 all in one platform designed to keep you and your loved ones safe.
             </p>
             <div class="hero-actions">
@@ -57,22 +61,26 @@
             <div class="feature-card glass-card">
                 <div class="feature-icon icon-rose">🚨</div>
                 <h3>Instant SOS Alerts</h3>
-                <p>One-tap emergency button sends your live GPS location to all trusted contacts via SMS and email instantly.</p>
+                <p>One-tap emergency button sends your live GPS location to all trusted contacts via SMS and email
+                    instantly.</p>
             </div>
             <div class="feature-card glass-card">
                 <div class="feature-icon icon-green">📍</div>
                 <h3>Live Location Tracking</h3>
-                <p>Continuous GPS tracking keeps your loved ones informed of your whereabouts in real time on an interactive map.</p>
+                <p>Continuous GPS tracking keeps your loved ones informed of your whereabouts in real time on an
+                    interactive map.</p>
             </div>
             <div class="feature-card glass-card">
                 <div class="feature-icon icon-purple">🗺️</div>
                 <h3>Safety Map Visualization</h3>
-                <p>Color-coded safety zones show safe, normal, and high-risk areas so you can make informed decisions.</p>
+                <p>Color-coded safety zones show safe, normal, and high-risk areas so you can make informed decisions.
+                </p>
             </div>
             <div class="feature-card glass-card">
                 <div class="feature-icon icon-cyan">🧭</div>
                 <h3>Safe Route Navigation</h3>
-                <p>Get route recommendations with safety scores. Green routes are safest, red routes are higher risk.</p>
+                <p>Get route recommendations with safety scores. Green routes are safest, red routes are higher risk.
+                </p>
             </div>
             <div class="feature-card glass-card">
                 <div class="feature-icon icon-amber">👥</div>
@@ -105,6 +113,39 @@
 
     <script src="/static/js/app.js"></script>
     <script>
+        // Session detection
+        document.addEventListener('DOMContentLoaded', () => {
+            const token = localStorage.getItem('access_token');
+            const navLinks = document.getElementById('navLinks');
+            const heroActions = document.querySelector('.hero-actions');
+            const ctaSection = document.querySelector('.features-section:last-of-type .section-header div');
+
+            if (token) {
+                // Update Nav
+                navLinks.innerHTML = `
+                    <li><a href="/" class="active">Home</a></li>
+                    <li><a href="/map">Map</a></li>
+                    <li><a href="/dashboard">Dashboard</a></li>
+                    <li><a href="#" onclick="localStorage.clear(); window.location.reload();" class="btn btn-secondary btn-sm">Log Out</a></li>
+                `;
+
+                // Update Hero
+                if (heroActions) {
+                    heroActions.innerHTML = `
+                        <a href="/dashboard" class="btn btn-primary btn-lg">Go to Dashboard →</a>
+                        <a href="/map" class="btn btn-secondary btn-lg">View Safety Map</a>
+                    `;
+                }
+
+                // Update CTA
+                if (ctaSection) {
+                    ctaSection.innerHTML = `
+                        <a href="/dashboard" class="btn btn-primary btn-lg">Go to Dashboard →</a>
+                    `;
+                }
+            }
+        });
+
         // Navbar scroll effect
         window.addEventListener('scroll', () => {
             const navbar = document.getElementById('navbar');
@@ -117,4 +158,5 @@
         });
     </script>
 </body>
+
 </html>
